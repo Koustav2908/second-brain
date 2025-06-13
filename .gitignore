@@ -1,0 +1,21 @@
+# Node/React (client)
+node_modules/
+build/
+dist/
+.env.local
+.env.development
+.env.production
+
+# Python/Flask (server)
+__pycache__/
+*.pyc
+env/
+venv/
+instance/
+.env
+
+# OS or editor junk
+.DS_Store
+*.swp
+
+.tailwind-config.js
