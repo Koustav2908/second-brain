@@ -34,6 +34,3 @@ instance/
 # OS or editor junk
 .DS_Store
 *.swp
-
-.tailwind-config.js
-temporary_folder/
