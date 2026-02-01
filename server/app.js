@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-const userRouter = require("./routes/user.js");
+const userRouter = require("./routes/userRoutes.js");
 
 const port = process.env.PORT || 5000;
 const dbUrl = process.env.MONGO_URI;
@@ -28,13 +28,16 @@ async function main() {
 app.use(express.json());
 
 app.get("/", (req, res) => {
-    res.send("Hello, World! 🤖");
+    res.json({
+        message: "Second Brain Backend API is running",
+        status: "OK",
+    });
 });
 
 // User routes
 app.use("/api/auth", userRouter);
 
-// Error Handling MiddleWare
+// Universal Error Handling MiddleWare
 app.use((err, req, res, next) => {
     let { status = 500, message = "Something went wrong!" } = err;
     res.status(status).json({
