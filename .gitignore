@@ -34,3 +34,5 @@ instance/
 # OS or editor junk
 .DS_Store
 *.swp
+
+research/

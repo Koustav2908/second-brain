@@ -6,21 +6,41 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-const port = process.env.PORT;
+const userRouter = require("./routes/user.js");
+
+const port = process.env.PORT || 5000;
 const dbUrl = process.env.MONGO_URI;
 
+if (!dbUrl) {
+    console.error("MONGO_URI is not defined");
+    process.exit(1);
+}
+
 main()
-    .then(() => console.log("Connected to database"))
+    .then((conn) => console.log("Connected to database: ", conn.name))
     .catch((err) => console.error(err));
 
 async function main() {
-    await mongoose.connect(dbUrl);
+    const conn = await mongoose.connect(dbUrl);
+    return conn.connection;
 }
 
 app.use(express.json());
 
 app.get("/", (req, res) => {
     res.send("Hello, World! 🤖");
+});
+
+// User routes
+app.use("/api/auth", userRouter);
+
+// Error Handling MiddleWare
+app.use((err, req, res, next) => {
+    let { status = 500, message = "Something went wrong!" } = err;
+    res.status(status).json({
+        success: false,
+        message,
+    });
 });
 
 app.listen(port, () => {
