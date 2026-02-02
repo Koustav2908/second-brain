@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const app = express();
 
 const userRouter = require("./routes/userRoutes.js");
+const folderRouter = require("./routes/folderRoutes.js");
 
 const port = process.env.PORT || 5000;
 const dbUrl = process.env.MONGO_URI;
@@ -36,6 +37,9 @@ app.get("/", (req, res) => {
 
 // User routes
 app.use("/api/auth", userRouter);
+
+// Folder routes
+app.use("/api/folders", folderRouter);
 
 // Universal Error Handling MiddleWare
 app.use((err, req, res, next) => {
