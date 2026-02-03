@@ -8,6 +8,7 @@ const app = express();
 
 const userRouter = require("./routes/userRoutes.js");
 const folderRouter = require("./routes/folderRoutes.js");
+const fileRouter = require("./routes/fileRoutes.js");
 
 const port = process.env.PORT || 5000;
 const dbUrl = process.env.MONGO_URI;
@@ -40,6 +41,9 @@ app.use("/api/auth", userRouter);
 
 // Folder routes
 app.use("/api/folders", folderRouter);
+
+// File routes
+app.use("/api/files", fileRouter);
 
 // Universal Error Handling MiddleWare
 app.use((err, req, res, next) => {

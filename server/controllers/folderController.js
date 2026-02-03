@@ -35,7 +35,10 @@ module.exports.create = async (req, res) => {
     if (exists) {
         return res
             .status(409)
-            .json({ message: "Folder with this name already exists here." });
+            .json({
+                message:
+                    "A folder with this name already exists in this folder.",
+            });
     }
 
     const folder = new Folder({
@@ -50,15 +53,23 @@ module.exports.create = async (req, res) => {
     return res.status(201).json(savedFolder);
 };
 
-// Rename folder name
+// Rename folder
 module.exports.update = async (req, res) => {
     const { name } = req.body;
-
-    if (!name) {
-        return res.status(400).json({ message: "Folder name is required." });
-    }
-
     const folder = req.folder;
+
+    const exists = await Folder.findOne({
+        owner: folder.owner,
+        parentFolder: folder.parentFolder,
+        name,
+        _id: { $ne: folder._id },
+    });
+
+    if (exists) {
+        return res.status(409).json({
+            message: "A folder with this name already exists in this folder.",
+        });
+    }
 
     folder.name = name;
     let updatedFolder = await folder.save();
@@ -87,11 +98,14 @@ module.exports.destroy = async (req, res) => {
         });
     }
 
+    const folderId = folder._id;
+    const folderName = folder.name;
+
     await folder.deleteOne();
-    console.log(`Folder ${folder.name} deleted succesfully.`);
+    console.log(`Folder ${folderName} deleted succesfully.`);
 
     return res.json({
         message: "Folder deleted successfully.",
-        id: folder._id,
+        id: folderId,
     });
 };

@@ -1,7 +1,7 @@
 const express = require("express");
 const userController = require("../controllers/userController.js");
 
-const { validateUser } = require("../middlewares/validateUserMiddleware.js");
+const { validateUser } = require("../middlewares/validateMiddleware.js");
 
 const wrapAsync = require("../utils/wrapAsync.js");
 

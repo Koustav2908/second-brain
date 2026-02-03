@@ -2,8 +2,9 @@ const express = require("express");
 const folderController = require("../controllers/folderController.js");
 
 const {
-    validateFolder,
-} = require("../middlewares/validateFolderMiddleware.js");
+    validateCreateFolder,
+    validateRenameFolder,
+} = require("../middlewares/validateMiddleware.js");
 const { isAuthenticated } = require("../middlewares/authMiddleware.js");
 const { isFolderOwner } = require("../middlewares/ownershipMiddleware.js");
 
@@ -15,7 +16,7 @@ const router = express.Router();
 router.post(
     "/",
     isAuthenticated,
-    validateFolder,
+    validateCreateFolder,
     wrapAsync(folderController.create),
 );
 
@@ -27,6 +28,7 @@ router.patch(
     "/:id",
     isAuthenticated,
     isFolderOwner,
+    validateRenameFolder,
     wrapAsync(folderController.update),
 );
 
