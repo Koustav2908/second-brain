@@ -1,16 +1,19 @@
+from langchain.schema import Document
 from sentence_transformers import SentenceTransformer
 
 model = None
 
 
-def load_embedding_model():
+def load_embedding_model() -> SentenceTransformer:
     global model
     if model is None:
         model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
     return model
 
 
-def embed_docs(chunks):
+def embed_docs(chunks: list[Document]) -> list[dict]:
+    model = load_embedding_model()
+
     texts = [chunk.page_content for chunk in chunks]
     embeddings = model.encode(texts)
 

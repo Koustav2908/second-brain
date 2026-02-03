@@ -1,7 +1,8 @@
+from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
-def chunk_pdf(pages):
+def chunk_pdf(pages: list[Document]) -> list[Document]:
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=600,
         chunk_overlap=100,
@@ -9,8 +10,4 @@ def chunk_pdf(pages):
         separators=["\n\n", "\n", " ", ""],
     )
 
-    chunks = splitter.split_documents(pages)
-    return {
-        "chunks": chunks,
-        "length": len(chunks),
-    }
+    return splitter.split_documents(pages)
