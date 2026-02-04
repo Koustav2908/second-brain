@@ -5,6 +5,9 @@ model = None
 
 
 def load_embedding_model() -> SentenceTransformer:
+    """
+    Function to load the embedding model used
+    """
     global model
     if model is None:
         model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
@@ -12,6 +15,9 @@ def load_embedding_model() -> SentenceTransformer:
 
 
 def embed_docs(chunks: list[Document]) -> list[dict]:
+    """
+    Function to convert text chunks into vector embeddings
+    """
     model = load_embedding_model()
 
     texts = [chunk.page_content for chunk in chunks]
