@@ -26,7 +26,7 @@ def embed_user_query(query: str) -> list[float]:
     return query_emb
 
 
-def build_prompt(query: str, context: str | None = None) -> str:
+def build_prompt(user_query: str, context: str | None = None) -> str:
     """
     Function to build the prompt using query and context
     """
@@ -40,9 +40,14 @@ Think step-by-step carefully and reason internally before answering.
 Answer in simple english to the user.
 
 User Query:
-{query}
+{user_query}
 
-{f"Context:\n{context}" if context else ""}
+{
+        f'''Context:
+{context}'''
+        if context
+        else ""
+    }
 """
     return prompt
 
@@ -99,12 +104,19 @@ def extract_citations(matches: list[dict]) -> list[dict]:
 
     for m in matches:
         meta = m["metadata"]
-        key = (meta["file_id"], meta.get("page"))
+        file_id, page = meta["file_id"], meta.get("page")
+
+        key = (file_id, page)
 
         if key not in seen:
             seen.add(key)
 
-            citations.append({"file_id": meta["file_id"], "page": meta.get("page")})
+            citations.append(
+                {
+                    "file_id": meta["file_id"],
+                    "page": int(page) if page is not None else None,
+                }
+            )
 
     return citations
 

@@ -12,7 +12,7 @@ def rag_query():
     user_id = data.get("userId")
     file_id = data.get("fileId")
 
-    if not query or user_id:
+    if not query or not user_id:
         return jsonify({"error": "query and userId required"}), 400
 
     try:

@@ -1,13 +1,25 @@
 import os
 
 from dotenv import load_dotenv
-from pinecone import Pinecone
+from pinecone import Pinecone, ServerlessSpec
 
 load_dotenv()
 
 INDEX_NAME = "second-brain"
+DIMENSIONS = 384
 
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+
+existing_indexes = [idx.name for idx in pc.list_indexes()]
+
+if INDEX_NAME not in existing_indexes:
+    pc.create_index(
+        name=INDEX_NAME,
+        dimension=DIMENSIONS,
+        metric="cosine",
+        spec=ServerlessSpec(cloud="aws", region="us-east-1"),
+    )
+
 index = pc.Index(INDEX_NAME)
 
 

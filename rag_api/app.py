@@ -4,6 +4,8 @@ import routes.query
 from flask import Flask, jsonify
 from routes import rag_bp
 
+PORT = 8080
+
 app = Flask(__name__)
 app.register_blueprint(rag_bp, url_prefix="/rag")
 
@@ -14,4 +16,4 @@ def health_check():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=PORT)
