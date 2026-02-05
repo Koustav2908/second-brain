@@ -42,4 +42,9 @@ const fileSchema = new mongoose.Schema(
     { timestamps: true },
 );
 
+fileSchema.index({ folder: 1, createdAt: -1 });
+fileSchema.index({ owner: 1 });
+fileSchema.index({ status: 1 });
+fileSchema.index({ owner: 1, folder: 1 });
+
 module.exports = mongoose.model("File", fileSchema);
