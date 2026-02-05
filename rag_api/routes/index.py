@@ -30,7 +30,10 @@ def rag_index():
             tmp_path = tmp.name
 
         pages = load_pdf(tmp_path)
+        num_pages = len(pages)
+
         chunks = generate_chunks(pages)
+        num_chunks = len(chunks)
 
         for i, chunk in enumerate(chunks):
             chunk.metadata.update(
@@ -40,6 +43,8 @@ def rag_index():
         embedded_chunks = embed_docs(chunks)
         upsert_embeddings(embedded_chunks)
 
-        return jsonify({"sucess": True, "chunks_indexed": len(chunks)})
+        return jsonify(
+            {"sucess": True, "chunks_indexed": num_chunks, "pages": num_pages}
+        )
     except Exception as e:
         return jsonify({"error": str(e)}), 500

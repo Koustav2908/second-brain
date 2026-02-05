@@ -1,6 +1,11 @@
 const File = require("../models/fileModel.js");
 const Folder = require("../models/folderModel.js");
 
+const {
+    createEmbeddings,
+    deleteEmbeddings,
+} = require("../services/embeddingService.js");
+
 const cloudinary = require("../config/cloudinary.js");
 
 // Upload a new file
@@ -27,7 +32,7 @@ module.exports.upload = async (req, res) => {
         }
     }
 
-    const exists = await File.findOne({
+    let exists = await File.findOne({
         owner,
         folder,
         name: req.file.originalname,
@@ -39,17 +44,27 @@ module.exports.upload = async (req, res) => {
         });
     }
 
+    const isPdf = req.file.mimetype === "application/pdf";
+
     const file = new File({
         name: req.file.originalname,
         owner,
         folder,
         cloudUrl: req.file.path,
         cloudPublicId: req.file.filename,
-        status: "uploaded",
+        status: isPdf ? "processing" : "failed",
     });
 
     let savedFile = await file.save();
     console.log(`File with name ${savedFile.name} saved.`);
+
+    if (isPdf) {
+        createEmbeddings(
+            owner.toString(),
+            savedFile._id.toString(),
+            savedFile.cloudUrl,
+        ).catch(console.error);
+    }
 
     return res.status(201).json(savedFile);
 };
@@ -95,13 +110,17 @@ module.exports.update = async (req, res) => {
 // Delete file
 module.exports.destroy = async (req, res) => {
     const file = req.file;
+    const fileId = file._id;
+    const fileName = file.name;
+    const fileOwner = file.owner;
+
+    deleteEmbeddings(fileOwner.toString(), fileId.toString()).catch(
+        console.error,
+    );
 
     await cloudinary.uploader.destroy(file.cloudPublicId, {
         resource_type: "raw",
     });
-
-    const fileId = file._id;
-    const fileName = file.name;
 
     await file.deleteOne();
     console.log(`File ${fileName} deleted succesfully.`);
