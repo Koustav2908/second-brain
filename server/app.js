@@ -10,6 +10,7 @@ const userRouter = require("./routes/userRoutes.js");
 const folderRouter = require("./routes/folderRoutes.js");
 const fileRouter = require("./routes/fileRoutes.js");
 const chatRouter = require("./routes/chatRoutes.js");
+const chatSessionRouter = require("./routes/chatSessionRoutes.js");
 
 const port = process.env.PORT || 5000;
 const dbUrl = process.env.MONGO_URI;
@@ -48,6 +49,9 @@ app.use("/api/files", fileRouter);
 
 // Chat routes
 app.use("/api/chat", chatRouter);
+
+// Chat Session routes
+app.use("/api/chat/sessions", chatSessionRouter);
 
 // Universal Error Handling MiddleWare
 app.use((err, req, res, next) => {

@@ -10,11 +10,16 @@ const chatSessionSchema = new mongoose.Schema(
         },
         title: {
             type: String,
+            default: "Unnamed Chat",
             trim: true,
         },
         isDeleted: {
             type: Boolean,
             default: false,
+        },
+        deletedAt: {
+            type: Date,
+            default: null,
         },
     },
     { timestamps: true },

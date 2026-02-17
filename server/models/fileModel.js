@@ -12,6 +12,13 @@ const fileSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
+        extension: {
+            type: String,
+            enum: ["pdf", "doc", "docx", "txt", "md", "ppt", "pptx", "csv"],
+            required: true,
+            lowercase: true,
+            trim: true,
+        },
         folder: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Folder",

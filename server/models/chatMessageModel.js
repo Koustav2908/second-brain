@@ -10,7 +10,7 @@ const chatMessageSchema = mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ["user", "assistant", "system"],
+            enum: ["user", "bot"],
             required: true,
         },
         content: {

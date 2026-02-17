@@ -8,10 +8,22 @@ const {
 
 const cloudinary = require("../config/cloudinary.js");
 
+const mimeToExtension = {
+    "application/pdf": "pdf",
+    "text/plain": "txt",
+    "application/msword": "doc",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        "docx",
+};
+
+const embeddableExtensions = ["pdf"];
+
 // Upload a new file
 module.exports.upload = async (req, res) => {
     const owner = req.user.id;
     const folder = req.body.folder || null;
+
+    const extension = mimeToExtension[req.file.mimetype];
 
     if (!req.file) {
         return res.status(400).json({
@@ -32,6 +44,10 @@ module.exports.upload = async (req, res) => {
         }
     }
 
+    if (!extension) {
+        return res.status(400).json({ message: "Unsupported file type." });
+    }
+
     let exists = await File.findOne({
         owner,
         folder,
@@ -44,21 +60,22 @@ module.exports.upload = async (req, res) => {
         });
     }
 
-    const isPdf = req.file.mimetype === "application/pdf";
+    const isEmbeddable = embeddableExtensions.includes(extension);
 
     const file = new File({
         name: req.file.originalname,
         owner,
         folder,
+        extension,
         cloudUrl: req.file.path,
         cloudPublicId: req.file.filename,
-        status: isPdf ? "processing" : "failed",
+        status: isEmbeddable ? "processing" : "uploaded",
     });
 
     let savedFile = await file.save();
     console.log(`File with name ${savedFile.name} saved.`);
 
-    if (isPdf) {
+    if (isEmbeddable) {
         createEmbeddings(
             owner.toString(),
             savedFile._id.toString(),

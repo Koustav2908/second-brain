@@ -1,12 +1,14 @@
 const express = require("express");
 const fileController = require("../controllers/fileController.js");
 
+const { validate } = require("../middlewares/validateMiddleware.js");
 const {
-    validateUploadFile,
-    validateRenameFile,
-} = require("../middlewares/validateMiddleware.js");
+    uploadFileSchema,
+    renameFileSchema,
+} = require("../schemas/fileSchema.js");
 const { isAuthenticated } = require("../middlewares/authMiddleware.js");
 const { isFileOwner } = require("../middlewares/ownershipMiddleware.js");
+const { validateObjectId } = require("../middlewares/objectIdMiddleware.js");
 
 const wrapAsync = require("../utils/wrapAsync.js");
 
@@ -19,7 +21,7 @@ router.post(
     "/upload",
     isAuthenticated,
     upload.single("file"),
-    validateUploadFile,
+    validate(uploadFileSchema),
     wrapAsync(fileController.upload),
 );
 
@@ -28,17 +30,19 @@ router.get("/", isAuthenticated, wrapAsync(fileController.index));
 
 // Rename file
 router.patch(
-    "/:id",
+    "/:fileId",
     isAuthenticated,
+    validateObjectId("fileId"),
     isFileOwner,
-    validateRenameFile,
+    validate(renameFileSchema),
     wrapAsync(fileController.update),
 );
 
 // Delete file
 router.delete(
-    "/:id",
+    "/:fileId",
     isAuthenticated,
+    validateObjectId("fileId"),
     isFileOwner,
     wrapAsync(fileController.destroy),
 );

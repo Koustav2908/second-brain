@@ -1,12 +1,14 @@
 const express = require("express");
 const folderController = require("../controllers/folderController.js");
 
+const { validate } = require("../middlewares/validateMiddleware.js");
 const {
-    validateCreateFolder,
-    validateRenameFolder,
-} = require("../middlewares/validateMiddleware.js");
+    createFolderSchema,
+    renameFolderSchema,
+} = require("../schemas/folderSchema.js");
 const { isAuthenticated } = require("../middlewares/authMiddleware.js");
 const { isFolderOwner } = require("../middlewares/ownershipMiddleware.js");
+const { validateObjectId } = require("../middlewares/objectIdMiddleware.js");
 
 const wrapAsync = require("../utils/wrapAsync.js");
 
@@ -16,7 +18,7 @@ const router = express.Router();
 router.post(
     "/",
     isAuthenticated,
-    validateCreateFolder,
+    validate(createFolderSchema),
     wrapAsync(folderController.create),
 );
 
@@ -25,17 +27,19 @@ router.get("/", isAuthenticated, wrapAsync(folderController.index));
 
 // Rename folder name
 router.patch(
-    "/:id",
+    "/:folderId",
     isAuthenticated,
+    validateObjectId("id"),
     isFolderOwner,
-    validateRenameFolder,
+    validate(renameFolderSchema),
     wrapAsync(folderController.update),
 );
 
 // Delete folder
 router.delete(
-    "/:id",
+    "/:folderId",
     isAuthenticated,
+    validateObjectId("id"),
     isFolderOwner,
     wrapAsync(folderController.destroy),
 );

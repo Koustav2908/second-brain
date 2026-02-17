@@ -35,4 +35,8 @@ instance/
 .DS_Store
 *.swp
 
+# temporary
 research/
+chunks_2.json
+embeddings_2.json
+complete_pipeline.ipynb

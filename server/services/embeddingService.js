@@ -7,7 +7,7 @@ module.exports.createEmbeddings = async (userId, fileId, documentUrl) => {
         let response = await axios.post(
             "http://127.0.0.1:8080/rag/index",
             { userId, fileId, documentUrl },
-            { timeout: 60000 },
+            { timeout: 300000 },
         );
 
         await File.findByIdAndUpdate(fileId, {
@@ -28,7 +28,7 @@ module.exports.deleteEmbeddings = async (userId, fileId) => {
     try {
         await axios.delete("http://127.0.0.1:8080/rag/delete", {
             data: { userId, fileId },
-            timeout: 20000,
+            timeout: 300000,
         });
     } catch (err) {
         console.error("Failed to delete embeddings:", err.message);
