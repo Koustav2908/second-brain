@@ -9,8 +9,8 @@ const app = express();
 const userRouter = require("./routes/userRoutes.js");
 const folderRouter = require("./routes/folderRoutes.js");
 const fileRouter = require("./routes/fileRoutes.js");
-const chatRouter = require("./routes/chatRoutes.js");
 const chatSessionRouter = require("./routes/chatSessionRoutes.js");
+const chatRouter = require("./routes/chatRoutes.js");
 
 const port = process.env.PORT || 5000;
 const dbUrl = process.env.MONGO_URI;
@@ -47,11 +47,19 @@ app.use("/api/folders", folderRouter);
 // File routes
 app.use("/api/files", fileRouter);
 
-// Chat routes
-app.use("/api/chat", chatRouter);
-
 // Chat Session routes
 app.use("/api/chat/sessions", chatSessionRouter);
+
+// Chat routes
+app.use("/api/chat/sessions", chatRouter);
+
+// 404 Route not Found Middleware
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: "Route not found",
+    });
+});
 
 // Universal Error Handling MiddleWare
 app.use((err, req, res, next) => {

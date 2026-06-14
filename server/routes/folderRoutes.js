@@ -29,7 +29,7 @@ router.get("/", isAuthenticated, wrapAsync(folderController.index));
 router.patch(
     "/:folderId",
     isAuthenticated,
-    validateObjectId("id"),
+    validateObjectId("folderId"),
     isFolderOwner,
     validate(renameFolderSchema),
     wrapAsync(folderController.update),
@@ -39,7 +39,7 @@ router.patch(
 router.delete(
     "/:folderId",
     isAuthenticated,
-    validateObjectId("id"),
+    validateObjectId("folderId"),
     isFolderOwner,
     wrapAsync(folderController.destroy),
 );

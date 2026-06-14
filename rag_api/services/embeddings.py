@@ -1,4 +1,4 @@
-from langchain.schema import Document
+from langchain_core.documents import Document
 from sentence_transformers import SentenceTransformer
 
 model = None
